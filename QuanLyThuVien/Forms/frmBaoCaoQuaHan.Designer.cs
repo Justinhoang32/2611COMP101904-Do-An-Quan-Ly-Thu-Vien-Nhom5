@@ -1,6 +1,6 @@
 ﻿namespace QuanLyThuVien.Forms
 {
-    partial class Form8
+    partial class frmBaoCaoQuaHan
     {
         /// <summary>
         /// Required designer variable.

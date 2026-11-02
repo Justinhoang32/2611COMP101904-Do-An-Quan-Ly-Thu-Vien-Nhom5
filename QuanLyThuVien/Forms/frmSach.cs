@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace QuanLyThuVien.Forms
 {
-    public partial class Form11 : Form
+    public partial class frmSach : Form
     {
-        public Form11()
+        public frmSach()
         {
             InitializeComponent();
         }
