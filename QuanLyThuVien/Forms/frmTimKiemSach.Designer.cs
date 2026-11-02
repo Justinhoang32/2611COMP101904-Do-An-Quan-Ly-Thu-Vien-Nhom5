@@ -1,6 +1,6 @@
 ﻿namespace QuanLyThuVien.Forms
 {
-    partial class Form7
+    partial class frmTimKiemSach
     {
         /// <summary>
         /// Required designer variable.

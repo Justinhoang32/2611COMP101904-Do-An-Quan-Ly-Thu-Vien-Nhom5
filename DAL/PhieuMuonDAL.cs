@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL
 {
-    internal class Class6
+    internal class PhieuMuonDAL
     {
     }
 }

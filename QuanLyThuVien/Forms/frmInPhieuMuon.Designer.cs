@@ -1,6 +1,6 @@
 ﻿namespace QuanLyThuVien.Forms
 {
-    partial class Form9
+    partial class frmInPhieuMuon
     {
         /// <summary>
         /// Required designer variable.
@@ -28,10 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form9";
+            SuspendLayout();
+            // 
+            // Form9
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
+            Name = "Form9";
+            Text = "Form9";
+            Load += Form9_Load;
+            ResumeLayout(false);
         }
 
         #endregion

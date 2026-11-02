@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL
 {
-    internal class Class4
+    internal class TheLoaiDAL
     {
     }
 }
