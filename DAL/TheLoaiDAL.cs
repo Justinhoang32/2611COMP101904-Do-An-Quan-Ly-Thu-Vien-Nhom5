@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 
-namespace DAL
+namespace QuanLyThuVien.DAL
 {
-    internal class TheLoaiDAL
+    public class TacGiaTheLoaiDAL // hoặc TheLoaiDAL tùy tên file của bạn
     {
+        public DataTable LayDanhSachTheLoai()
+        {
+            string query = "SELECT * FROM TheLoai";
+            return DatabaseHelper.ExecuteQuery(query);
+        }
     }
 }

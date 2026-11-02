@@ -1,12 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
+using QuanLyThuVien.DAL;
 
-namespace BLL
+namespace QuanLyThuVien.BLL
 {
-    internal class TacGiaTheLoaiBLL
+    public class TacGiaTheLoaiBLL
     {
+        // Nếu bạn đã có lớp DAL cho Tác Giả / Thể Loại, bạn gọi trực tiếp vào đây.
+        // Hoặc sử dụng tạm DatabaseHelper để truy vấn nhanh danh mục:
+        public DataTable LayDanhSachTheLoai()
+        {
+            string query = "SELECT * FROM TheLoai";
+            return DatabaseHelper.ExecuteQuery(query);
+        }
+
+        public DataTable LayDanhSachTacGia()
+        {
+            string query = "SELECT * FROM TacGia";
+            return DatabaseHelper.ExecuteQuery(query);
+        }
     }
 }

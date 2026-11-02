@@ -1,17 +1,22 @@
+using System;
+using System.Windows.Forms;
+using QuanLyThuVien.Forms;
+
 namespace QuanLyThuVien
 {
     internal static class Program
     {
         /// <summary>
-        ///  The main entry point for the application.
+        /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            // Thay frmDangNhap bằng tên form mở đầu của chương trình (ví dụ: frmDangNhap hoặc frmMain)
+            Application.Run(new frmDangNhap());
         }
     }
 }

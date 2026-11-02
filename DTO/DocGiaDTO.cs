@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DTO
+﻿namespace QuanLyThuVien.DTO
 {
-    internal class DocGiaDTO
+    public class DocGiaDTO
     {
+        public string MaDocGia { get; set; }
+        public string HoTen { get; set; }
+        public System.DateTime? NgaySinh { get; set; }
+        public string DienThoai { get; set; }
+        public string Email { get; set; }
     }
 }

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 
-namespace DAL
+namespace QuanLyThuVien.DAL
 {
-    internal class TacGiaDAL
+    public class TacGiaDAL
     {
+        public DataTable LayDanhSachTacGia()
+        {
+            string query = "SELECT * FROM TacGia";
+            return DatabaseHelper.ExecuteQuery(query);
+        }
     }
 }
