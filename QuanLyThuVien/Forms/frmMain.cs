@@ -1,132 +1,150 @@
-using QuanLyThuVien.Demo;
-using QuanLyThuVien.GiaoDien;
-using System.Globalization;
+using QuanLyThuVien.Controls;
+using QuanLyThuVien.Presenters;
+using QuanLyThuVien.UserControls;
+using QuanLyThuVien.Views;
 
 namespace QuanLyThuVien.Forms;
 
-public partial class frmMain : Form
+/// <summary>
+/// Khung chính: sidebar (8 mục + mục quản trị) / header (breadcrumb, ngày, người dùng) / vùng nội dung / footer.
+/// Các màn hình con là UserControl được nạp vào pnlNoiDung. Form này không có nghiệp vụ, mọi xử lý do MainPresenter đảm nhiệm.
+/// </summary>
+public partial class frmMain : Form, IMainView, IDieuHuong
 {
-    private readonly LibraryDemo store;
-    private readonly Panel content = new() { Dock = DockStyle.Fill };
-    private readonly Label breadcrumb = Ui.Label("Thư viện / Tổng quan", color: Ui.Muted, size: 9);
-    private readonly Dictionary<LibraryScreen, Button> navigation = [];
-    private LibraryPage? current;
-    public bool LoggedOut
-    {
-        get; private set;
-    }
+    private readonly Dictionary<MucMenu, MenuItemSidebar> _menu = new();
+    private Control _manHinhHienTai;
+    private MucMenu _mucDangChon;
 
-    public frmMain() : this(new LibraryDemo()) { }
-    public frmMain(LibraryDemo store)
+    private readonly MainPresenter _presenter;
+
+    // ----- IMainView -----
+    public event EventHandler Loaded;
+    public event EventHandler<YeuCauDieuHuong> MenuDuocChon;
+    public event EventHandler DangXuatClicked;
+    public event EventHandler YeuCauLamMoiHuyHieu;
+
+    public frmMain()
     {
-        this.store = store;
         InitializeComponent();
-        BuildShell();
-        OpenScreen(LibraryScreen.Overview);
+        if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;   // chế độ thiết kế: không tạo Presenter
+        GanSuKien();
+        _presenter = new MainPresenter(this);
     }
 
-    private void BuildShell()
+    #region Gắn sự kiện và phần không biểu diễn được trong Designer
+    // Khung giao diện (sidebar, header, footer, các mục menu) nằm trong frmMain.Designer.cs (kéo-thả được).
+    // Ở đây ánh xạ mục menu <-> MucMenu, gắn sự kiện và vẽ các đường viền.
+    private void GanSuKien()
     {
-        Text = "Thư viện HCMUE";
-        Font = Ui.BodyFont;
-        BackColor = Ui.Background;
-        MinimumSize = new Size(1160, 760);
-        Size = new Size(1460, 960);
-        StartPosition = FormStartPosition.CenterScreen;
-        var sidebar = new Panel { Width = 232, Dock = DockStyle.Left, BackColor = Color.White, Padding = new Padding(16), AutoScroll = true };
-        var stack = Ui.Stack();
-        var logo = new PictureBox { Image = Ui.Asset("hcmue-logo.png"), SizeMode = PictureBoxSizeMode.Zoom, Height = 70, Width = 148, Dock = DockStyle.Top, Margin = new Padding(12, 6, 30, 16) };
-        stack.Controls.Add(logo);
-        stack.Controls.Add(Ui.Heading("Thư viện HCMUE", 14));
-        stack.Controls.Add(Ui.Label("HỆ THỐNG QUẢN LÝ THƯ VIỆN", color: Ui.Muted, size: 7.5F));
-        var caption = Ui.Label("KHÔNG GIAN LÀM VIỆC", true, Ui.Muted, 7.5F);
-        caption.Margin = new Padding(0, 24, 0, 12);
-        stack.Controls.Add(caption);
-        (LibraryScreen Screen, string Text, string Icon)[] links =
-        [
-            (LibraryScreen.Overview,"Tổng quan","layout-dashboard"), (LibraryScreen.Books,"Quản lý sách","book-open"),
-            (LibraryScreen.Catalog,"Tác giả & thể loại","tags"), (LibraryScreen.Readers,"Độc giả","users"),
-            (LibraryScreen.Loans,"Phiếu mượn","clipboard-list"), (LibraryScreen.Returns,"Ghi nhận trả sách","clipboard-check"),
-            (LibraryScreen.Search,"Tìm kiếm sách","search"), (LibraryScreen.Overdue,"Báo cáo quá hạn","chart-no-axes-combined")
-        ];
-        foreach (var link in links)
+        _menu[MucMenu.TongQuan] = mnuTongQuan;
+        _menu[MucMenu.QuanLySach] = mnuQuanLySach;
+        _menu[MucMenu.TacGiaTheLoai] = mnuTacGiaTheLoai;
+        _menu[MucMenu.DocGia] = mnuDocGia;
+        _menu[MucMenu.PhieuMuon] = mnuPhieuMuon;
+        _menu[MucMenu.GhiNhanTraSach] = mnuGhiNhanTraSach;
+        _menu[MucMenu.TimKiemSach] = mnuTimKiemSach;
+        _menu[MucMenu.BaoCaoQuaHan] = mnuBaoCaoQuaHan;
+        foreach (var kv in _menu)
         {
-            var button = Ui.Button(link.Text, () => OpenScreen(link.Screen), icon: link.Icon);
-            button.AutoSize = false;
-            button.Size = new Size(200, 46);
-            button.Dock = DockStyle.Top;
-            button.TextAlign = ContentAlignment.MiddleLeft;
-            button.Font = Ui.BodyFont;
-            button.FlatAppearance.BorderSize = 0;
-            button.Margin = new Padding(0, 0, 0, 5);
-            navigation[link.Screen] = button;
-            stack.Controls.Add(button);
+            var muc = kv.Key;
+            kv.Value.Click += (s, e) => MenuDuocChon?.Invoke(this, new YeuCauDieuHuong(muc));
         }
-        var admin = Ui.Label("QUẢN TRỊ HỆ THỐNG", true, Ui.Muted, 7.5F);
-        admin.Margin = new Padding(0, 28, 0, 12);
-        stack.Controls.Add(admin);
-        var account = Ui.Button("Tài khoản & phân quyền", () => Ui.Info("Phần quản lý tài khoản chưa nằm trong 11 giao diện được cung cấp."), icon: "shield-check");
-        account.Font = Ui.SmallFont;
-        account.FlatAppearance.BorderSize = 0;
-        account.Enabled = store.Session.IsManager;
-        stack.Controls.Add(account);
-        var motto = Ui.Stack(Ui.Label("━━━━", color: Ui.Red), Ui.Label("Chất lượng – Sáng tạo – Nhân văn", color: Ui.Navy, size: 8), Ui.Label("Năm học 2026 – 2027", color: Ui.Muted, size: 8));
-        motto.Margin = new Padding(8, 60, 0, 12);
-        stack.Controls.Add(motto);
-        sidebar.Controls.Add(stack);
-        var workspace = new Panel { Dock = DockStyle.Fill };
-        var topbar = new Panel { Dock = DockStyle.Top, Height = 72, BackColor = Color.White, Padding = new Padding(28, 18, 24, 12) };
-        var left = Ui.Actions(Ui.Label("HCMUE", true, Ui.Navy, 9), breadcrumb);
-        left.Dock = DockStyle.Left;
-        var right = Ui.Actions(Ui.Label(store.Today.ToString("dddd, dd/MM/yyyy", CultureInfo.GetCultureInfo("vi-VN")), color: Ui.Muted, size: 8),
-            Ui.Button("", () => OpenScreen(LibraryScreen.Overdue), icon: "bell"), Ui.Label(store.Session.Name + "\n" + (store.Session.IsManager ? "Quản trị viên" : "Thủ thư") + " · Cơ sở An Dương Vương", true, size: 8),
-            Ui.Button("", () => { LoggedOut = true; Close(); }, icon: "log-out"));
-        right.Dock = DockStyle.Right;
-        foreach (Control c in right.Controls)
-            if (c is Button b && b.Image != null && b.Text == "")
-            {
-                b.AccessibleName = b == right.Controls[1] ? "Báo cáo quá hạn" : "Đăng xuất";
-            }
-        topbar.Controls.Add(left);
-        topbar.Controls.Add(right);
-        workspace.Controls.Add(content);
-        workspace.Controls.Add(topbar);
-        Controls.Add(workspace);
-        Controls.Add(sidebar);
-    }
+        lnkDangXuat.LinkClicked += (s, e) => DangXuatClicked?.Invoke(this, EventArgs.Empty);
 
-    public void OpenScreen(LibraryScreen screen, object? value = null)
-    {
-        current?.Dispose();
-        content.Controls.Clear();
-        current = screen switch
+        pnlSidebar.Paint += (s, e) =>
         {
-            LibraryScreen.Overview => new frmTongQuan(store),
-            LibraryScreen.Books => new frmSach(store),
-            LibraryScreen.Catalog => new frmTacGiaTheLoai(store),
-            LibraryScreen.Readers => new frmDocGia(store),
-            LibraryScreen.Loans => new frmDanhSachPhieuMuon(store),
-            LibraryScreen.CreateLoan => new frmLapPhieuMuon(store),
-            LibraryScreen.Returns => new frmTraSach(store, value as DemoLoan),
-            LibraryScreen.Search => new frmTimKiemSach(store),
-            LibraryScreen.Overdue => new frmBaoCaoQuaHan(store),
-            LibraryScreen.Print => new frmInPhieuMuon(store, value as DemoLoan ?? store.Loans[0]),
-            _ => throw new ArgumentOutOfRangeException(nameof(screen))
+            using var pen = new Pen(UiTheme.VienNhat);
+            e.Graphics.DrawLine(pen, pnlSidebar.Width - 1, 0, pnlSidebar.Width - 1, pnlSidebar.Height);   // viền phải
         };
-        current.Navigate += OpenScreen;
-        content.Controls.Add(current);
-        current.Show();
-        breadcrumb.Text = "Thư viện / " + current.Text;
-        var selected = screen is LibraryScreen.CreateLoan or LibraryScreen.Print ? LibraryScreen.Loans : screen;
-        foreach (var (key, button) in navigation)
+        tlpHeader.Paint += (s, e) =>
         {
-            button.BackColor = key == selected ? Ui.Blue : Color.White;
-            button.Font = key == selected ? Ui.BoldFont : Ui.BodyFont;
-        }
+            using var pen = new Pen(UiTheme.VienNhat);
+            e.Graphics.DrawLine(pen, 0, tlpHeader.Height - 1, tlpHeader.Width, tlpHeader.Height - 1);
+        };
+
+        Load += (s, e) => Loaded?.Invoke(this, EventArgs.Empty);
+        FormClosing += (s, e) => _manHinhHienTai?.Dispose();
+    }
+    #endregion
+
+    // ----- IMainView -----
+    public void HienThiNguoiDung(string hoTen, string chucVu, string kyTuVietTat)
+    {
+        lblHoTen.Text = hoTen;
+        lblChucVu.Text = chucVu;
+        avatar.KyTu = kyTuVietTat;
     }
 
-    private void frmMain_Load(object sender, EventArgs e)
-    {
+    public void HienThiNgayHienTai(string ngay) => lblNgay.Text = ngay;
+    public void HienThiNamHoc(string namHoc) => lblNamHoc.Text = namHoc;
+    public void HienThiNgayDuLieu(string noiDung) => lblDuLieu.Text = noiDung;
 
+    public void HienThiSoQuaHan(int soPhieu) =>
+        _menu[MucMenu.BaoCaoQuaHan].HuyHieu = soPhieu > 0 ? soPhieu.ToString() : null;
+
+    /// <summary>Nạp màn hình tương ứng vào vùng nội dung, đổi mục menu đang chọn và breadcrumb.</summary>
+    public void HienThiManHinh(YeuCauDieuHuong yeuCau, string duongDan)
+    {
+        var moi = TaoManHinh(yeuCau.Muc);
+        moi.Dock = DockStyle.Fill;
+
+        // Bỏ màn hình cũ, nạp màn hình mới
+        pnlNoiDung.SuspendLayout();
+        var cu = _manHinhHienTai;
+        pnlNoiDung.Controls.Clear();
+        cu?.Dispose();
+        pnlNoiDung.Controls.Add(moi);
+        _manHinhHienTai = moi;
+        pnlNoiDung.ResumeLayout(true);
+
+        if (moi is INhanThamSo nhan) nhan.NhanThamSo(yeuCau.ThamSo);
+
+        // Màn hình phụ tô sáng mục cha trên sidebar
+        _mucDangChon = yeuCau.Muc;
+        var mucSidebar = yeuCau.Muc is MucMenu.LapPhieuMuon or MucMenu.XemTruocPhieu ? MucMenu.PhieuMuon : yeuCau.Muc;
+        foreach (var kv in _menu) kv.Value.DangChon = kv.Key == mucSidebar;
+
+        lblBreadcrumb.Text = "HCMUE  |  Thư viện  /  " + duongDan;
+        YeuCauLamMoiHuyHieu?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// Nhà máy tạo màn hình. Mỗi mục menu tương ứng một UserControl.
+    /// </summary>
+    private Control TaoManHinh(MucMenu muc) => muc switch
+    {
+        MucMenu.TongQuan => new ucTongQuan(this),
+        MucMenu.QuanLySach => new ucQuanLySach(),
+        MucMenu.TacGiaTheLoai => new ucTacGiaTheLoai(),
+        MucMenu.DocGia => new ucDocGia(),
+        MucMenu.PhieuMuon => new ucPhieuMuon(this),
+        MucMenu.LapPhieuMuon => new ucLapPhieuMuon(this),
+        MucMenu.TimKiemSach => new ucTimKiemSach(this),
+        MucMenu.GhiNhanTraSach => new ucGhiNhanTraSach(this),
+        MucMenu.XemTruocPhieu => new ucXemTruocPhieu(this),
+        MucMenu.BaoCaoQuaHan => new ucBaoCaoQuaHan(this),
+        _ => throw new ArgumentOutOfRangeException(nameof(muc), muc, "Mục menu chưa được hỗ trợ.")
+    };
+
+    // ----- IDieuHuong: màn hình con gọi để chuyển màn hình -----
+    public void DieuHuong(MucMenu muc, object thamSo = null) =>
+        MenuDuocChon?.Invoke(this, new YeuCauDieuHuong(muc, thamSo));
+
+    public void LamMoiHuyHieuQuaHan() => YeuCauLamMoiHuyHieu?.Invoke(this, EventArgs.Empty);
+
+    public void HienThiThongTin(string thongBao) =>
+        MessageBox.Show(this, thongBao, "Thông tin", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+    public void HienThiLoi(string thongBao) =>
+        MessageBox.Show(this, thongBao, "Có lỗi xảy ra", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+    public bool XacNhan(string cauHoi) =>
+        MessageBox.Show(this, cauHoi, "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+
+    /// <summary>Đóng khung chính; đăng xuất thì trả Retry để Program.cs mở lại màn hình đăng nhập.</summary>
+    public void KetThuc(bool dangXuat)
+    {
+        DialogResult = dangXuat ? DialogResult.Retry : DialogResult.Cancel;
+        Close();
     }
 }
