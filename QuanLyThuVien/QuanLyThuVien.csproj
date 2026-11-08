@@ -1,21 +1,59 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
-
+  <ItemGroup>
+    <Using Include="System.ComponentModel" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BLL\BLL.csproj" />
-    <ProjectReference Include="..\DTO\DTO.csproj" />
   </ItemGroup>
-
+  <ItemGroup>
+    <!-- Xuất Excel -->
+    <PackageReference Include="ClosedXML" Version="0.104.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Thư mục Resources (logo, ảnh nền đăng nhập) được chép sang thư mục chạy chương trình -->
+    <None Update="Resources\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Nhận diện Form / UserControl và gắn file Designer vào file logic để mở được bằng Designer -->
+    <Compile Update="Forms\frmChiTietSach.cs"><SubType>Form</SubType></Compile>
+    <Compile Update="Forms\frmChiTietSach.Designer.cs"><DependentUpon>frmChiTietSach.cs</DependentUpon></Compile>
+    <Compile Update="Forms\frmDangNhap.cs"><SubType>Form</SubType></Compile>
+    <Compile Update="Forms\frmDangNhap.Designer.cs"><DependentUpon>frmDangNhap.cs</DependentUpon></Compile>
+    <Compile Update="Forms\frmHoSoDocGia.cs"><SubType>Form</SubType></Compile>
+    <Compile Update="Forms\frmHoSoDocGia.Designer.cs"><DependentUpon>frmHoSoDocGia.cs</DependentUpon></Compile>
+    <Compile Update="Forms\frmMain.cs"><SubType>Form</SubType></Compile>
+    <Compile Update="Forms\frmMain.Designer.cs"><DependentUpon>frmMain.cs</DependentUpon></Compile>
+    <Compile Update="UserControls\ucBaoCaoQuaHan.cs"><SubType>UserControl</SubType></Compile>
+    <Compile Update="UserControls\ucBaoCaoQuaHan.Designer.cs"><DependentUpon>ucBaoCaoQuaHan.cs</DependentUpon></Compile>
+    <Compile Update="UserControls\ucDocGia.cs"><SubType>UserControl</SubType></Compile>
+    <Compile Update="UserControls\ucDocGia.Designer.cs"><DependentUpon>ucDocGia.cs</DependentUpon></Compile>
+    <Compile Update="UserControls\ucGhiNhanTraSach.cs"><SubType>UserControl</SubType></Compile>
+    <Compile Update="UserControls\ucGhiNhanTraSach.Designer.cs"><DependentUpon>ucGhiNhanTraSach.cs</DependentUpon></Compile>
+    <Compile Update="UserControls\ucLapPhieuMuon.cs"><SubType>UserControl</SubType></Compile>
+    <Compile Update="UserControls\ucLapPhieuMuon.Designer.cs"><DependentUpon>ucLapPhieuMuon.cs</DependentUpon></Compile>
+    <Compile Update="UserControls\ucPhieuMuon.cs"><SubType>UserControl</SubType></Compile>
+    <Compile Update="UserControls\ucPhieuMuon.Designer.cs"><DependentUpon>ucPhieuMuon.cs</DependentUpon></Compile>
+    <Compile Update="UserControls\ucQuanLySach.cs"><SubType>UserControl</SubType></Compile>
+    <Compile Update="UserControls\ucQuanLySach.Designer.cs"><DependentUpon>ucQuanLySach.cs</DependentUpon></Compile>
+    <Compile Update="UserControls\ucTacGiaTheLoai.cs"><SubType>UserControl</SubType></Compile>
+    <Compile Update="UserControls\ucTacGiaTheLoai.Designer.cs"><DependentUpon>ucTacGiaTheLoai.cs</DependentUpon></Compile>
+    <Compile Update="UserControls\ucTimKiemSach.cs"><SubType>UserControl</SubType></Compile>
+    <Compile Update="UserControls\ucTimKiemSach.Designer.cs"><DependentUpon>ucTimKiemSach.cs</DependentUpon></Compile>
+    <Compile Update="UserControls\ucTongQuan.cs"><SubType>UserControl</SubType></Compile>
+    <Compile Update="UserControls\ucTongQuan.Designer.cs"><DependentUpon>ucTongQuan.cs</DependentUpon></Compile>
+    <Compile Update="UserControls\ucXemTruocPhieu.cs"><SubType>UserControl</SubType></Compile>
+    <Compile Update="UserControls\ucXemTruocPhieu.Designer.cs"><DependentUpon>ucXemTruocPhieu.cs</DependentUpon></Compile>
+    <Compile Update="Controls\ucDanhMucPanel.cs"><SubType>UserControl</SubType></Compile>
+    <Compile Update="Controls\ucDanhMucPanel.Designer.cs"><DependentUpon>ucDanhMucPanel.cs</DependentUpon></Compile>
+  </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
-    <Folder Include="Properties\" />
   </ItemGroup>
-
 </Project>
