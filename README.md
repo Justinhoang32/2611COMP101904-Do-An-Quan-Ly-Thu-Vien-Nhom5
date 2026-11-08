@@ -16,10 +16,10 @@
 
 | STT | Họ và tên | MSSV | Nhiệm vụ |
 |---|---|---|---|
-| 1 | Hoàng Minh Nhật | *51.01.104.066* | *Code kiến trúc MVP, đăng nhập, màn hình chính, lập phiếu mượn, trả sách, in phiếu, quản lý Git, tổng hợp báo cáo, dựng LaTeX. * |
-| 2 | Nguyễn Thanh Thủy | *50.01.104.160* | *Thiết kế CSDL, script SQL, code quản lý sách, nhập CSV, tác giả và thể loại, viết Chương 1, Chương 5 và Chương 9.* |
-| 3 | Phạm Gia Minh Hiếu | *51.01.104.028* | *Code quản lý độc giả, cấp thẻ, tìm kiếm sách, danh sách phiếu mượn, viết Chương , Chương 6 và Chương 3, Dựng LaTeX. * |
-| 4 | Phan Thành Vinh | *51.01.104.126* | *Thiết kế CSDL, script SQL, tổng quan, báo cáo quá hạn, kiểm thử, viết Chương 4, Chương 7, Chương 8 và Chương 10.* |
+| 1 | Hoàng Minh Nhật | 51.01.104.066 |Code kiến trúc MVP, đăng nhập, màn hình chính, lập phiếu mượn, trả sách, in phiếu, quản lý Git, tổng hợp báo cáo, dựng LaTeX.|
+| 2 | Nguyễn Thanh Thủy | 50.01.104.160 |Thiết kế CSDL, script SQL, code quản lý sách, nhập CSV, tác giả và thể loại, viết Chương 1, Chương 5 và Chương 9.|
+| 3 | Phạm Gia Minh Hiếu | 51.01.104.028 |Code quản lý độc giả, cấp thẻ, tìm kiếm sách, danh sách phiếu mượn, viết Chương , Chương 6 và Chương 3, Dựng LaTeX. |
+| 4 | Phan Thành Vinh | 51.01.104.126 | Thiết kế CSDL, script SQL, tổng quan, báo cáo quá hạn, kiểm thử, viết Chương 4, Chương 7, Chương 8 và Chương 10. |
 
 > Tên 4 thành viên lấy từ 4 tài khoản quản trị trong dữ liệu mẫu. Hãy sửa lại cho đúng và điền MSSV, phân công.
 
