@@ -9,8 +9,8 @@
 | **Tên đề tài** | Xây dựng phần mềm Quản lý thư viện  |
 | **Công nghệ** | C# WinForms, .NET 8 (`net8.0-windows`), SQL Server Express, ADO.NET (Microsoft.Data.SqlClient) |
 | **Kiến trúc** | MVP kết hợp 3 lớp (DTO – DAL – BLL – giao diện) |
-| **Giảng viên hướng dẫn** | *(điền tên thầy/cô)* |
-| **Môn học / Lớp** | *(điền)* |
+| **Giảng viên hướng dẫn** | ThS. Lê Thanh Thoại |
+| **Môn học / Lớp** | LẬP TRÌNH WINDOWS - Lớp 2611COMP101904 |
 
 ### Thành viên nhóm (4 người)
 
