@@ -12,7 +12,7 @@
 | **Giảng viên hướng dẫn** | ThS. Lê Thanh Thoại |
 | **Môn học / Lớp** | LẬP TRÌNH WINDOWS - Lớp 2611COMP101904 |
 
-### Thành viên nhóm (4 người)
+### Thành viên nhóm 
 
 | STT | Họ và tên | MSSV | Nhiệm vụ |
 |---|---|---|---|
@@ -21,7 +21,6 @@
 | 3 | Phạm Gia Minh Hiếu | 51.01.104.028 |Code quản lý độc giả, cấp thẻ, tìm kiếm sách, danh sách phiếu mượn, viết Chương , Chương 6 và Chương 3, Dựng LaTeX. |
 | 4 | Phan Thành Vinh | 51.01.104.126 | Thiết kế CSDL, script SQL, tổng quan, báo cáo quá hạn, kiểm thử, viết Chương 4, Chương 7, Chương 8 và Chương 10. |
 
-> Tên 4 thành viên lấy từ 4 tài khoản quản trị trong dữ liệu mẫu. Hãy sửa lại cho đúng và điền MSSV, phân công.
 
 ## 2. Chức năng
 
@@ -86,7 +85,6 @@ Buoc2/
 └─ MauNhap/        mau_nhap_danh_muc.csv (file mẫu nhập danh mục sách)
 ```
 
-Mỗi màn hình có 2 file: `tên.cs` (logic, sự kiện) và `tên.Designer.cs` (giao diện, mở bằng Designer kéo-thả được).
 
 ## 5. Hướng dẫn cài đặt và chạy
 
@@ -102,7 +100,6 @@ Mỗi màn hình có 2 file: `tên.cs` (logic, sự kiện) và `tên.Designer.c
 2. Mở và chạy (F5) file **`QuanLyThuVien_FixLoi.sql`** (file database gốc) để tạo database `QuanLyThuVien` và dữ liệu mẫu.
 3. Chạy tiếp file **`SQL/QuanLyThuVien_CapNhat.sql`** để bổ sung các cột mà giao diện cần (nhà xuất bản, ngôn ngữ, ảnh bìa, tình trạng lưu hành, ngày trả...). File này chạy lại nhiều lần vẫn an toàn.
 
-> Phải chạy đúng thứ tự: file gốc trước, file cập nhật sau.
 
 ### 5.3. Mở dự án
 
